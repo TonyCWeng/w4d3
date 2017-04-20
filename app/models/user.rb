@@ -6,6 +6,13 @@ class User < ActiveRecord::Base
 
   attr_reader :password
 
+  has_many :cats,
+    primary_key: :id,
+    foreign_key: :user_id,
+    class_name: :Cat
+
+  has_many :requests
+
   def self.generate_session_token
     SecureRandom::urlsafe_base64(16)
   end
@@ -36,7 +43,5 @@ class User < ActiveRecord::Base
   def is_password?(password)
     self.password_digest == BCrypt::Password.create(password)
   end
-
-
 
 end

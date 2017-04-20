@@ -1,5 +1,5 @@
 class SessionsController < ApplicationController
-
+  before_action :redirect_page, only: [:new, :create]
   def new
     render :new
   end
@@ -10,15 +10,20 @@ class SessionsController < ApplicationController
     return render :new if @user.nil?
 
     if @user.valid?
-      @user.reset_session_token!
-      session[:session_token] = @user.session_token
-      redirect_to cats_url
+      login_user!(@user)
     else
       render :new
     end
   end
 
   def destroy
-
+    if current_user
+      @current_user = current_user
+      @current_user.reset_session_token!
+      session[:session_token] = nil
+      redirect_to cats_url
+    end
   end
+
+
 end
